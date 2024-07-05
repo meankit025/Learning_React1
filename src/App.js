@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
 
-function App() {
+const App = () => {
+  const [advice, setAdvice] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Check if advice is already in LocalStorage
+    const cachedAdvice = localStorage.getItem("advice");
+    if (cachedAdvice) {
+      setAdvice(cachedAdvice);
+    }
+  }, []);
+
+  const clickHandler = async () => {
+    setLoading(true);
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json();
+    const newAdvice = data.slip.advice;
+    setAdvice(newAdvice);
+    localStorage.setItem("advice", newAdvice);
+    setLoading(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>{loading ? "Loading..." : advice}</h1>
+      <div>
+        <button onClick={clickHandler} disabled={loading}>
+          {loading ? "Fetching..." : "Get Advice"}
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default App;

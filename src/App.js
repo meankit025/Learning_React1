@@ -15,7 +15,7 @@ const App = () => {
 
   const clearDataHandler = () => {
     localStorage.removeItem("myData");
-    setAdvice(null);
+    setAdvice("No Advice please click get advice ☺️");
     setCount(0);
   };
 
